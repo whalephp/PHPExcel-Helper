@@ -1,4 +1,16 @@
 {
+    "name": "whalephp/PHPExcel-Helper",
+    "description": "PHPExcel Helper",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/whalephp/PHPExcel-Helper",
+    "type": "library",
+    "keywords": ["PHPExcel","PHPExcel-Helper","whalephp"],
+    "authors": [
+        {
+            "name": "qw_xingzhe",
+            "email": "1243463730@qq.com"
+        }
+    ],
     "require": {
         "phpoffice/phpexcel": "^1.8"
     },
