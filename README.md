@@ -8,7 +8,7 @@ PHPExcel辅助开发类，帮助开发者快速创建各类excel。
 
 #### 安装教程
 
-使用 composer 安装依赖 phpexcel
+使用 composer 安装，依赖 phpexcel
 ~~~
 $ composer require whalephp/phpexcel-helper
 ~~~
@@ -34,6 +34,7 @@ $key = array(
 );
 $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 ~~~
+![](images/20180626091320.png)
 
 
 demo 2：跨行跨列表格
@@ -122,3 +123,4 @@ $data = array(
 
 $ToolExcel->exportExcel($data);
 ~~~
+![](images/20180626091458.png)
