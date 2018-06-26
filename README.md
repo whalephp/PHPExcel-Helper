@@ -34,7 +34,7 @@ $key = array(
 );
 $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 ~~~
-![](images/20180626091320.png)
+![](images/20180626091458.png)
 
 
 demo 2：跨行跨列表格
@@ -123,4 +123,4 @@ $data = array(
 
 $ToolExcel->exportExcel($data);
 ~~~
-![](images/20180626091458.png)
+![](images/20180626091320.png)
