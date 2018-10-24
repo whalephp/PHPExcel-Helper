@@ -34,7 +34,7 @@ $key = array(
 );
 $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 ~~~
-![1540372635030](images\1540372635030.png)
+![1540372635030](images/1540372635030.png)
 
 demo 2：跨行跨列表格
 
@@ -123,7 +123,7 @@ $data = array(
 
 $ToolExcel->exportExcel($data);
 ~~~
-![1540372598972](images\1540372598972.png)
+![1540372598972](images/1540372598972.png)
 
 demo 3：指定列宽
 
@@ -149,7 +149,7 @@ $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 
 
 
-![1540372560858](images\1540372560858.png)
+![1540372560858](images/1540372560858.png)
 
 demo 4：指定sheet信息
 
@@ -178,7 +178,7 @@ $ToolExcel->exportExcelSimp([
 
 
 
-![1540372539349](images\1540372539349.png)
+![1540372539349](images/1540372539349.png)
 
 demo 5：多sheet
 
@@ -230,7 +230,7 @@ $ToolExcel->exportExcelSimp($fileInfo,[$key,$key_02],[$list,$list_02]);
 
 
 
-![1540372500801](images\1540372500801.png)
+![1540372500801](images/1540372500801.png)
 
 
 
