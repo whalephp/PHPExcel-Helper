@@ -17,7 +17,7 @@ $ composer require whalephp/phpexcel-helper
 #### Demo
 
 demo 1：简单表格
-~~~
+~~~php
 <?php 
 include './vendor/autoload.php';
 
@@ -34,11 +34,11 @@ $key = array(
 );
 $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 ~~~
-![](images/20180626091458.png)
-
+![1540372635030](images\1540372635030.png)
 
 demo 2：跨行跨列表格
-~~~
+
+~~~php
 <?php 
 include './vendor/autoload.php';
 
@@ -123,4 +123,114 @@ $data = array(
 
 $ToolExcel->exportExcel($data);
 ~~~
-![](images/20180626091955.png)
+![1540372598972](images\1540372598972.png)
+
+demo 3：指定列宽
+
+~~~php
+<?php 
+include '../vendor/autoload.php';
+include '../src/PHPExcelHelper.php';
+
+$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+$list = array(
+    array('id'=>1,'name'=>'a','nickname'=>'aa'),
+    array('id'=>2,'name'=>'b','nickname'=>'bb'),
+    array('id'=>3,'name'=>'c','nickname'=>'cc'),
+    array('id'=>4,'name'=>'d','nickname'=>'dddddddddddddddddddddddddddddddd'),
+);
+$key = array(
+    'id'	    => ['编号',10],
+    'name'	    => ['姓名',15],
+    'nickname'	=> ['昵称',35],
+);
+$ToolExcel->exportExcelSimp('简版测试',$key,$list);
+~~~
+
+
+
+![1540372560858](images\1540372560858.png)
+
+demo 4：指定sheet信息
+
+~~~php
+<?php 
+include '../vendor/autoload.php';
+include '../src/PHPExcelHelper.php';
+
+$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+$list = array(
+    array('id'=>1,'name'=>'a','nickname'=>'aa'),
+    array('id'=>2,'name'=>'b','nickname'=>'bb'),
+    array('id'=>3,'name'=>'c','nickname'=>'cc'),
+    array('id'=>4,'name'=>'d','nickname'=>'dddddddddddddddddddddddddddddddd'),
+);
+$key = array(
+    'id'	    => ['编号',10],
+    'name'	    => ['姓名',15],
+    'nickname'	=> ['昵称',35],
+);
+$ToolExcel->exportExcelSimp([
+    'file_name'     => '简版测试',
+    'sheetTitle'    => '工作区一',
+],$key,$list);
+~~~
+
+
+
+![1540372539349](images\1540372539349.png)
+
+demo 5：多sheet
+
+~~~php
+<?php 
+include '../vendor/autoload.php';
+include '../src/PHPExcelHelper.php';
+
+$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+
+// 第一组数据
+//--------------------------------------------------------------
+$list = array(
+    array('id'=>1,'name'=>'a','nickname'=>'aa'),
+    array('id'=>2,'name'=>'b','nickname'=>'bb'),
+    array('id'=>3,'name'=>'c','nickname'=>'cc'),
+    array('id'=>4,'name'=>'d','nickname'=>'dddddddddddddddddddddddddddddddd'),
+);
+$key = array(
+    'id'	    => ['编号',10],
+    'name'	    => ['姓名',15],
+    'nickname'	=> ['昵称',35],
+);
+
+// 第二组数据
+//--------------------------------------------------------------
+$list_02 = array(
+    array('id'=>1,'name'=>'a','nickname'=>'aa2'),
+    array('id'=>2,'name'=>'b','nickname'=>'bb2'),
+    array('id'=>3,'name'=>'c','nickname'=>'cc2'),
+    array('id'=>4,'name'=>'d','nickname'=>'ddddddddddddddddddd2'),
+);
+$key_02 = array(
+    'id'	    => ['编号二',10],
+    'name'	    => ['姓名二',15],
+    'nickname'	=> ['昵称二',25],
+);
+
+$fileInfo = [
+    'file_name'=>'简版测试',
+    'sheet'=>[
+        ['sheetIndex'=>0,'sheetTitle'=>'工作区一'],
+        ['sheetIndex'=>1,'sheetTitle'=>'工作区二'],
+    ]
+];
+
+$ToolExcel->exportExcelSimp($fileInfo,[$key,$key_02],[$list,$list_02]);
+~~~
+
+
+
+![1540372500801](images\1540372500801.png)
+
+
+
