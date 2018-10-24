@@ -71,24 +71,22 @@ class PHPExcelHelper
 
     }
 
-    /**
-     * 快速导出excel（简洁版）
-     * @param $file_name
-     * @param $keyArr
-     * @param $list
-     * @param string $excel_type
-     * @throws \PHPExcel_Exception
-     */
-	public function exportExcelSimp($file_name,$keyArr,$list,$excel_type='xls'){
-		$allKey = array();
-				
-		$this->setProperties();
-		
-		//生成表头
-		$col_num        = 1;
+    public function createExcelSheet($file_info,$keyArr,$list)
+    {
+        // Sheet 设置
+        if($file_info['sheetIndex']>0){     //创建附加工作表
+            $newWorkSheet = new \PHPExcel_Worksheet($this->objPHPExcel, 'card_message'); 	//创建一个工作表
+            $this->objPHPExcel->addSheet($newWorkSheet); 									        //插入工作表
+            $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex']);
+        }
+        $this->objPHPExcel->getActiveSheet()->setTitle( $file_info['sheetTitle'] );
+
+        //生成表头
+        $col_num        = 1;
         $toCCel         = 'A1';
-		$char_width     = [];   // 列宽
-		foreach ($keyArr as $key=>$key_val){
+        $allKey         = [];   // 全部使用到列Key
+        $char_width     = [];   // 列宽
+        foreach ($keyArr as $key=>$key_val){
             $width = null;
             if(is_array($key_val)){
                 $name  = $key_val[0];
@@ -99,38 +97,74 @@ class PHPExcelHelper
 
             // 列内容填充
             //-----------------------------------------------
-			$allKey[] 		= $key;
-			$toCharacter 	= $this->getCharacterByColNum($col_num);
+            $allKey[] 		= $key;
+            $toCharacter 	= $this->getCharacterByColNum($col_num);
             $toCCel         = $toCharacter . '1';	//列数
             $char_width[ $toCharacter ] = mb_strlen($name);
-			$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue( $toCCel, $name);
-			$col_num++;
+            $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex'])->setCellValue( $toCCel, $name);
+            $col_num++;
 
-			// 设置列宽
-			//-----------------------------------------------
-			if($width){      // 指定宽度
+            // 设置列宽
+            //-----------------------------------------------
+            if($width){      // 指定宽度
                 $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setWidth($width);
             }else{          // 设置自适应
                 $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setAutoSize(true);
             }
-		}
+        }
 
-		// 列头样式设置
-		$this->setStyle('A1:'.$toCCel,array(),$this->excelHeaderStyle());
-		
-		// 生成数据主体
-		$col_num = 1;
-		foreach ( $list as $i=>$one ){
-			$col_num++;	//行数
-			foreach ($allKey as $k=>$key){
-				$toCharacter    = $this->getCharacterByColNum($k+1);
-				$toCCel         = $toCharacter . $col_num;	//列数
-				$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue( $toCCel, $one[$key] );
-			}
-		}
+        // 列头样式设置
+        $this->setStyle('A1:'.$toCCel,array(),$this->excelHeaderStyle());
+
+        // 生成数据主体
+        $col_num = 1;
+        foreach ( $list as $i=>$one ){
+            $col_num++;	//行数
+            foreach ($allKey as $k=>$key){
+                $toCharacter    = $this->getCharacterByColNum($k+1);
+                $toCCel         = $toCharacter . $col_num;	//列数
+                $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex'])->setCellValue( $toCCel, $one[$key] );
+            }
+        }
+    }
+
+    /**
+     * 快速导出excel（简洁版）
+     * @param $file_name
+     * @param $keyArr
+     * @param $list
+     * @param string $excel_type
+     * @throws \PHPExcel_Exception
+     */
+	public function exportExcelSimp($file_info,$keyArr,$list,$excel_type='xls'){
+
+        $file_info_defaulty = [
+            'file_name'     => date('Y-m-d H:i:s'),
+            'sheetIndex'    => 0,
+            'sheetTitle'    => '表一',
+            'sheet'         => null,    // 多Sheet   [['sheetIndex' => 0,'sheetTitle' => '表一'],['sheetIndex' => 0,'sheetTitle' => '表一']]
+        ];
+        if(is_array($file_info)){
+            $file_info = array_replace($file_info_defaulty,$file_info);
+        }else{
+            $file_info_defaulty['file_name'] = $file_info;
+            $file_info = $file_info_defaulty;
+        }
+
+        $this->setProperties();
+
+        if($file_info['sheet']){
+            foreach ($file_info['sheet'] as $group=>$sheet){
+                $file_info = array_replace($file_info,$sheet);
+                $this->createExcelSheet($file_info,$keyArr[$group],$list[$group]);
+            }
+            $this->objPHPExcel->setActiveSheetIndex(0);
+        }else{
+            $this->createExcelSheet($file_info,$keyArr,$list);
+        }
 
 		//执行导出
-		$this->doExport($file_name,$excel_type);
+		$this->doExport($file_info['file_name'],$excel_type);
 	}
     //---------------------------------------------------------------------------------------------
 	
@@ -206,7 +240,7 @@ class PHPExcelHelper
 				}
 			}
 		}
-		
+
 // 		vde($cellAllUsedArr);
 		// Rename worksheet
 		$objSheet->setTitle( $sheetTitle );

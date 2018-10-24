@@ -14,5 +14,8 @@ $key = array(
     'name'	    => ['姓名',15],
     'nickname'	=> ['昵称',35],
 );
-$ToolExcel->exportExcelSimp('简版测试',$key,$list);
+$ToolExcel->exportExcelSimp([
+    'file_name'     => '简版测试',
+    'sheetTitle'    => '工作区一',
+],$key,$list);
 
