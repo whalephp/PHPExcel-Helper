@@ -57,15 +57,17 @@ class PHPExcelHelper
      * @param array $config
      * @return array
      */
-    public function excelHeader($config=[])
+    public function excelHeaderStyle($config=[])
     {
         return array_replace([
-            'background'	=> 'adadad',
-            'center'		=> 1
+            //'background'        => 'adadad',
+            'center'            => 1,
+            'bold'              => true,
         ],$config);
     }
 
-    public function exportExcelAdv($file_name,$keyArr,$list,$excel_type='xls'){
+    public function exportExcelAdv($file_name,$keyArr,$list,$excel_type='xls')
+    {
 
     }
 
@@ -95,7 +97,8 @@ class PHPExcelHelper
                 $name = $key_val;
             }
 
-
+            // 列内容填充
+            //-----------------------------------------------
 			$allKey[] 		= $key;
 			$toCharacter 	= $this->getCharacterByColNum($col_num);
             $toCCel         = $toCharacter . '1';	//列数
@@ -103,28 +106,29 @@ class PHPExcelHelper
 			$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue( $toCCel, $name);
 			$col_num++;
 
+			// 设置列宽
+			//-----------------------------------------------
 			if($width){      // 指定宽度
                 $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setWidth($width);
             }else{          // 设置自适应
                 $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setAutoSize(true);
             }
 		}
-		$this->setStyle('A1:'.$toCCel,array(),$this->excelHeader());
+
+		// 列头样式设置
+		$this->setStyle('A1:'.$toCCel,array(),$this->excelHeaderStyle());
 		
-		//生成主体
+		// 生成数据主体
 		$col_num = 1;
 		foreach ( $list as $i=>$one ){
 			$col_num++;	//行数
 			foreach ($allKey as $k=>$key){
 				$toCharacter    = $this->getCharacterByColNum($k+1);
 				$toCCel         = $toCharacter . $col_num;	//列数
-
-				$this->objPHPExcel  ->setActiveSheetIndex(0)
-                                    ->setCellValue( $toCCel, $one[$key] );
+				$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue( $toCCel, $one[$key] );
 			}
 		}
-		
-		
+
 		//执行导出
 		$this->doExport($file_name,$excel_type);
 	}
