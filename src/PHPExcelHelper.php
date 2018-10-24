@@ -32,43 +32,95 @@ class PHPExcelHelper
 		}
 		return $currentChildCharacter;
 	}
-	
+
+
+
+
+
+
+
+	//---------------------------------------------------------------------------------------------
+    public function setProperties()
+    {
+        // Set document properties
+        $this->objPHPExcel->getProperties()->setCreator("Maarten Balliauw")
+            ->setLastModifiedBy("Maarten Balliauw")
+            ->setTitle("Office 2007 XLSX Test Document")
+            ->setSubject("Office 2007 XLSX Test Document")
+            ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+            ->setKeywords("office 2007 openxml php")
+            ->setCategory("Test result file");
+    }
+
+    /**
+     * excel头样式
+     * @param array $config
+     * @return array
+     */
+    public function excelHeader($config=[])
+    {
+        return array_replace([
+            'background'	=> 'adadad',
+            'center'		=> 1
+        ],$config);
+    }
+
+    public function exportExcelAdv($file_name,$keyArr,$list,$excel_type='xls'){
+
+    }
+
+    /**
+     * 快速导出excel（简洁版）
+     * @param $file_name
+     * @param $keyArr
+     * @param $list
+     * @param string $excel_type
+     * @throws \PHPExcel_Exception
+     */
 	public function exportExcelSimp($file_name,$keyArr,$list,$excel_type='xls'){
 		$allKey = array();
 				
-		// Set document properties
-		$this->objPHPExcel->getProperties()->setCreator("Maarten Balliauw")
-						->setLastModifiedBy("Maarten Balliauw")
-						->setTitle("Office 2007 XLSX Test Document")
-						->setSubject("Office 2007 XLSX Test Document")
-						->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
-						->setKeywords("office 2007 openxml php")
-						->setCategory("Test result file");
+		$this->setProperties();
 		
 		//生成表头
-		$col_num = 1;
-		$toCharacter = 'A1';
-		foreach ($keyArr as $key=>$name){
+		$col_num        = 1;
+        $toCCel         = 'A1';
+		$char_width     = [];   // 列宽
+		foreach ($keyArr as $key=>$key_val){
+            $width = null;
+            if(is_array($key_val)){
+                $name  = $key_val[0];
+                $width = $key_val[1];
+            }else{
+                $name = $key_val;
+            }
+
+
 			$allKey[] 		= $key;
-			$toCharacter 	= $this->getCharacterByColNum($col_num) . '1';
-			$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue( $toCharacter, $name );
+			$toCharacter 	= $this->getCharacterByColNum($col_num);
+            $toCCel         = $toCharacter . '1';	//列数
+            $char_width[ $toCharacter ] = mb_strlen($name);
+			$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue( $toCCel, $name);
 			$col_num++;
+
+			if($width){      // 指定宽度
+                $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setWidth($width);
+            }else{          // 设置自适应
+                $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setAutoSize(true);
+            }
 		}
-		$currentCell = '';
-		$colData = array(
-				'background'	=> 'adadad',
-				'center'		=> 1,
-		);
-		$this->setStyle('A1:'.$toCharacter,array(),$colData);
+		$this->setStyle('A1:'.$toCCel,array(),$this->excelHeader());
 		
 		//生成主体
 		$col_num = 1;
 		foreach ( $list as $i=>$one ){
 			$col_num++;	//行数
 			foreach ($allKey as $k=>$key){
-				$toCharacter 	= $this->getCharacterByColNum($k+1);
-				$toCCel = $toCharacter . $col_num;	//列数
-				$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue( $toCCel, $one[$key] );
+				$toCharacter    = $this->getCharacterByColNum($k+1);
+				$toCCel         = $toCharacter . $col_num;	//列数
+
+				$this->objPHPExcel  ->setActiveSheetIndex(0)
+                                    ->setCellValue( $toCCel, $one[$key] );
 			}
 		}
 		
@@ -76,6 +128,7 @@ class PHPExcelHelper
 		//执行导出
 		$this->doExport($file_name,$excel_type);
 	}
+    //---------------------------------------------------------------------------------------------
 	
 	/**
 	 * 生成Excel
