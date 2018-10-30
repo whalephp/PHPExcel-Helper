@@ -87,8 +87,10 @@ class PHPExcelHelper
         $allKey         = [];   // 全部使用到列Key
         $char_width     = [];   // 列宽
         foreach ($keyArr as $key=>$key_val){
-            $width = null;
+            $width      = null;
             $parse_json = null;
+            $to_str     = 'json';
+
 
             if(is_array($key_val) && isset($key_val[0]) ){  // 索引配置：0 字段名 1 列宽
                 $name  = $key_val[0];
@@ -98,6 +100,7 @@ class PHPExcelHelper
                 $width      = (isset($key_val['width']))?$key_val['width']:$width;
                 $parse_json = (isset($key_val['parse_json']))?$key_val['parse_json']:$parse_json;
                 $key        = (isset($key_val['field']))?$key_val['field']:$key;
+                $to_str     = (isset($key_val['to_str']))?$key_val['to_str']:$to_str;
             }else{  // 字符串配置：字段名
                 $name = $key_val;
             }
@@ -107,6 +110,7 @@ class PHPExcelHelper
             $allKey[]       = [     // 生成数据主题需要使用的字段key
                 'val_key'       => $key,
                 'parse_json'    => $parse_json,
+                'to_str'        => $to_str
             ];
             $toCharacter    = $this->getCharacterByColNum($col_num);
             $toCCel         = $toCharacter . '1';	//列数
@@ -143,28 +147,36 @@ class PHPExcelHelper
                 $val_key_count  = count($val_key_arr);
                 $val_key_first  = $val_key_arr[0];
                 $val            = $one[ $val_key_first ];
+
+                // 数组内容的使用
+                //-----------------------------------------------------------------
                 $val_arr        = $val;     // 数组场景使用
                 // 首先判断当前字段是否为字符串，是则转换成数组
                 if( is_string($val_arr) ){
                     $temp = json_decode($val_arr,true);
                     if($temp)$val_arr = $temp;
                 }
-
                 if($val_key_count>1){                // 数组场景一：取出数组内的值
                     for ($j=1;$j<$val_key_count;$j++){
                         $val = $val_arr[ $val_key_arr[$j] ];
                     }
                 }elseif ($config['parse_json']){    // 数组场景二：格式化json展示
                     $val = '';
-                    //echo "<pre>";var_dump($config['parse_json']);var_dump($val_arr);exit();
-                    foreach ($val_arr as $val_k=>$val_v){
-                        if( isset($config['parse_json'][$val_k]) ){
-                            $val .= $config['parse_json'][$val_k].':'.$val_v.';';
+                    foreach ($config['parse_json'] as $filed_key=>$filed_name){
+                        if( isset($val_arr[$filed_key]) ){
+                            $val .= $filed_name.':'.$val_arr[$filed_key].';';
                         }
                     }
                 }
+
+                // 最终写入时，数组值得处理
+                //-----------------------------------------------------------------
                 if(is_array($val)){     // 数组值，自动转换成json展示
-                    $val = json_encode($val);
+                    if($config['to_str']=='json'){
+                        $val = json_encode($val);
+                    }else{
+                        $val = implode($config['to_str'],$val);
+                    }
                 }
                 $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex'])->setCellValue( $toCCel,$val );
             }

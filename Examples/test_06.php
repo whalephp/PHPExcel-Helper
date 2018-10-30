@@ -22,7 +22,7 @@ $key = array(
 //--------------------------------------------------------------
 $list_02 = array(
     array('id'=>1,'name'=>'a','nickname'=>'aa2',                    'data'=>["a"=>"aaa","b"=>"bbb","c"=>"ccc"]),
-    array('id'=>2,'name'=>'b','nickname'=>'bb2',                    'data'=>'{"a":"111","b":"222","c":"333"}'),
+    array('id'=>2,'name'=>'b','nickname'=>'bb2',                    'data'=>'{"a":111.55555555555,"b":222.1000000000000009,"c":333.22222222}'),
     array('id'=>3,'name'=>'c','nickname'=>'ddddddddddddddddddd2',   'data'=>'{"a":"aaa111","b":"bbb222","c":"ccc333"}'),
 );
 $key_02 = array(
@@ -35,15 +35,22 @@ $key_02 = array(
         'title'     => '格式化数据',
         'width'     => 50,
         'parse_json'=> [
+            'c' => '节点c-指定最前',
             'a' => '节点(a)',
             'b' => '节点(b)',
-            'c' => '节点c',
         ]
     ],
     'data2'	    => [
-        'title'     => '原始数据',
-        'field'     => 'data',  // 对应数据中实际的字段键值
-        'width'     => 40
+        'title'         => '原始数据-数组转json（默认可不传）',
+        'to_str'        => 'json',
+        'field'         => 'data',  // 对应数据中实际的字段键值
+        'width'         => 40
+    ],
+    'data3'	    => [
+        'title'         => '原始数据-数组用指定字符拼接',
+        'to_str'        => '-',
+        'field'         => 'data',  // 对应数据中实际的字段键值
+        'width'         => 40
     ]
 );
 
