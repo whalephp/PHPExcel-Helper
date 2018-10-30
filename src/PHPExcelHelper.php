@@ -88,17 +88,27 @@ class PHPExcelHelper
         $char_width     = [];   // 列宽
         foreach ($keyArr as $key=>$key_val){
             $width = null;
-            if(is_array($key_val)){
+            $parse_json = null;
+
+            if(is_array($key_val) && isset($key_val[0]) ){  // 索引配置：0 字段名 1 列宽
                 $name  = $key_val[0];
                 $width = $key_val[1];
-            }else{
+            }elseif(is_array($key_val)) {   // 全量配置
+                $name       = $key_val['title'];
+                $width      = (isset($key_val['width']))?$key_val['width']:$width;
+                $parse_json = (isset($key_val['parse_json']))?$key_val['parse_json']:$parse_json;
+                $key        = (isset($key_val['field']))?$key_val['field']:$key;
+            }else{  // 字符串配置：字段名
                 $name = $key_val;
             }
 
             // 列内容填充
             //-----------------------------------------------
-            $allKey[] 		= $key;
-            $toCharacter 	= $this->getCharacterByColNum($col_num);
+            $allKey[]       = [     // 生成数据主题需要使用的字段key
+                'val_key'       => $key,
+                'parse_json'    => $parse_json,
+            ];
+            $toCharacter    = $this->getCharacterByColNum($col_num);
             $toCCel         = $toCharacter . '1';	//列数
             $char_width[ $toCharacter ] = mb_strlen($name);
             $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex'])->setCellValue( $toCCel, $name);
@@ -106,7 +116,8 @@ class PHPExcelHelper
 
             // 设置列宽
             //-----------------------------------------------
-            if($width){      // 指定宽度
+            if($width || $file_info['width']){      // 指定宽度
+                $width = ($width)?$width:$file_info['width'];
                 $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setWidth($width);
             }else{          // 设置自适应
                 $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setAutoSize(true);
@@ -115,16 +126,49 @@ class PHPExcelHelper
 
         // 列头样式设置
         $this->setStyle('A1:'.$toCCel,array(),$this->excelHeaderStyle());
+//
+//        echo "<pre>";
+//        var_dump($allKey);//exit();
+//        echo "<br/>";var_dump($list);//exit();
+//        echo "<hr/>";
 
         // 生成数据主体
         $col_num = 1;
         foreach ( $list as $i=>$one ){
             $col_num++;	//行数
-            foreach ($allKey as $k=>$key){
+            foreach ($allKey as $k=>$config){
                 $toCharacter    = $this->getCharacterByColNum($k+1);
                 $toCCel         = $toCharacter . $col_num;	//列数
-                $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex'])->setCellValue( $toCCel, $one[$key] );
+                $val_key_arr    = explode('.',$config['val_key']);
+                $val_key_count  = count($val_key_arr);
+                $val_key_first  = $val_key_arr[0];
+                $val            = $one[ $val_key_first ];
+                $val_arr        = $val;     // 数组场景使用
+                // 首先判断当前字段是否为字符串，是则转换成数组
+                if( is_string($val_arr) ){
+                    $temp = json_decode($val_arr,true);
+                    if($temp)$val_arr = $temp;
+                }
+
+                if($val_key_count>1){                // 数组场景一：取出数组内的值
+                    for ($j=1;$j<$val_key_count;$j++){
+                        $val = $val_arr[ $val_key_arr[$j] ];
+                    }
+                }elseif ($config['parse_json']){    // 数组场景二：格式化json展示
+                    $val = '';
+                    //echo "<pre>";var_dump($config['parse_json']);var_dump($val_arr);exit();
+                    foreach ($val_arr as $val_k=>$val_v){
+                        if( isset($config['parse_json'][$val_k]) ){
+                            $val .= $config['parse_json'][$val_k].':'.$val_v.';';
+                        }
+                    }
+                }
+                if(is_array($val)){     // 数组值，自动转换成json展示
+                    $val = json_encode($val);
+                }
+                $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex'])->setCellValue( $toCCel,$val );
             }
+//            exit();
         }
     }
 
@@ -140,6 +184,7 @@ class PHPExcelHelper
 
         $file_info_defaulty = [
             'file_name'     => date('Y-m-d H:i:s'),
+            'min_width'     => null,    // 指定默认最小宽度
             'sheetIndex'    => 0,
             'sheetTitle'    => '表一',
             'sheet'         => null,    // 多Sheet   [['sheetIndex' => 0,'sheetTitle' => '表一'],['sheetIndex' => 0,'sheetTitle' => '表一']]
