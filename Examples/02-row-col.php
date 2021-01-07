@@ -1,8 +1,10 @@
 <?php 
 include '../vendor/autoload.php';
-include '../src/PHPExcelHelper.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
+
 $data = array(
 		'file_name'	=> '测试-跨行跨列',
 		'sheetInfo'	=> array(

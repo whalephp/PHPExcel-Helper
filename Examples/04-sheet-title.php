@@ -1,8 +1,10 @@
-<?php 
+<?php
 include '../vendor/autoload.php';
-include '../src/PHPExcelHelper.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
+
 $list = array(
     array('id'=>1,'name'=>'a','nickname'=>'aa'),
     array('id'=>2,'name'=>'b','nickname'=>'bb'),

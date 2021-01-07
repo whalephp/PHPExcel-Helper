@@ -1,8 +1,9 @@
-<?php 
+<?php
 include '../vendor/autoload.php';
-include '../src/PHPExcelHelper.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
 
 // 第一组数据
 //--------------------------------------------------------------
