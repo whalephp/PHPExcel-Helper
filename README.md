@@ -1,12 +1,15 @@
-# PHPExcel-Helper
-
-
-#### 项目介绍
-# PHPExcel-Helper是什么？
+### 项目介绍
+##### PHPExcel-Helper是什么？
 PHPExcel辅助开发类，帮助开发者快速创建各类excel。
 
+[github](https://github.com/whalephp/PHPExcel-Helper)
 
-#### 安装教程
+##### PHPExcel-Helper存在的意义？
+官方phpexcel库功能全面，但其调用有些繁琐，一个简单的表格导出可能需要写上几十行代码，本库将phpexcel中常用的方法配置进行封装，并添加了一些常用的业务支持，通常几行代码即可实现一个导出功能。
+
+在实际开发中很容易的可以将数据库中查询出来的列表配置导出。
+
+### 安装教程
 
 使用 composer 安装，依赖 phpexcel
 ~~~
@@ -14,9 +17,9 @@ $ composer require whalephp/phpexcel-helper
 ~~~
 
 
-#### Demo
+### Demo
 
-demo 1：简单表格
+##### demo 1：简单表格
 ~~~php
 <?php 
 include './vendor/autoload.php';
@@ -34,9 +37,9 @@ $key = array(
 );
 $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 ~~~
-![1540372635030](images/1540372635030.png)
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a19ef6b5996c49c1ad5d1d5eb9d08609~tplv-k3u1fbpfcp-watermark.image)
 
-demo 2：跨行跨列表格
+##### demo 2：跨行跨列表格
 
 ~~~php
 <?php 
@@ -123,9 +126,9 @@ $data = array(
 
 $ToolExcel->exportExcel($data);
 ~~~
-![1540372598972](images/1540372598972.png)
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/019eeae8518a49cfbe9fca98243b13b1~tplv-k3u1fbpfcp-watermark.image)
 
-demo 3：指定列宽
+##### demo 3：指定列宽
 
 ~~~php
 <?php 
@@ -146,12 +149,9 @@ $key = array(
 );
 $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 ~~~
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ff0b239c71b54a4fbd222e3fd9875b8a~tplv-k3u1fbpfcp-watermark.image)
 
-
-
-![1540372560858](images/1540372560858.png)
-
-demo 4：指定sheet信息
+##### demo 4：指定sheet信息
 
 ~~~php
 <?php 
@@ -175,12 +175,10 @@ $ToolExcel->exportExcelSimp([
     'sheetTitle'    => '工作区一',
 ],$key,$list);
 ~~~
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/428b9397cfa54da3a30a05d920f9fcf6~tplv-k3u1fbpfcp-watermark.image)
 
 
-
-![1540372539349](images/1540372539349.png)
-
-demo 5：多sheet
+##### demo 5：多sheet
 
 ~~~php
 <?php 
@@ -227,14 +225,11 @@ $fileInfo = [
 
 $ToolExcel->exportExcelSimp($fileInfo,[$key,$key_02],[$list,$list_02]);
 ~~~
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8ede852ca6574a3980dc22d9d24e1ffd~tplv-k3u1fbpfcp-watermark.image)
 
 
 
-![1540372500801](images/1540372500801.png)
-
-
-
-demo 6：综合（更多配置）
+##### demo 6：综合（更多配置、支持json字符串解析）
 
 ~~~php
 <?php 
@@ -297,5 +292,4 @@ $fileInfo = [
 
 $ToolExcel->exportExcelSimp($fileInfo,[$key_02,$key],[$list_02,$list]);
 ~~~
-
-![1540887052352](images/1540887052352.png)
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7b246a86981c4428997becc6a3894042~tplv-k3u1fbpfcp-watermark.image)
