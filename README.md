@@ -22,9 +22,12 @@ $ composer require whalephp/phpexcel-helper
 ##### demo 1：简单表格
 ~~~php
 <?php 
-include './vendor/autoload.php';
+include '../vendor/autoload.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
+
 $list = array(
 		array('id'=>1,'name'=>'a'),
 		array('id'=>2,'name'=>'b'),
@@ -43,9 +46,12 @@ $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 
 ~~~php
 <?php 
-include './vendor/autoload.php';
+include '../vendor/autoload.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
+
 $data = array(
 		'file_name'	=> '测试-跨行跨列',
 		'sheetInfo'	=> array(
@@ -133,9 +139,11 @@ $ToolExcel->exportExcel($data);
 ~~~php
 <?php 
 include '../vendor/autoload.php';
-include '../src/PHPExcelHelper.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
+
 $list = array(
     array('id'=>1,'name'=>'a','nickname'=>'aa'),
     array('id'=>2,'name'=>'b','nickname'=>'bb'),
@@ -154,11 +162,13 @@ $ToolExcel->exportExcelSimp('简版测试',$key,$list);
 ##### demo 4：指定sheet信息
 
 ~~~php
-<?php 
+<?php
 include '../vendor/autoload.php';
-include '../src/PHPExcelHelper.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
+
 $list = array(
     array('id'=>1,'name'=>'a','nickname'=>'aa'),
     array('id'=>2,'name'=>'b','nickname'=>'bb'),
@@ -183,9 +193,10 @@ $ToolExcel->exportExcelSimp([
 ~~~php
 <?php 
 include '../vendor/autoload.php';
-include '../src/PHPExcelHelper.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
 
 // 第一组数据
 //--------------------------------------------------------------
@@ -234,9 +245,10 @@ $ToolExcel->exportExcelSimp($fileInfo,[$key,$key_02],[$list,$list_02]);
 ~~~php
 <?php 
 include '../vendor/autoload.php';
-include '../src/PHPExcelHelper.php';
 
-$ToolExcel = new \whalephp\tool\PHPExcelHelper();
+use whalephp\tool\PHPExcelHelper;
+
+$ToolExcel = new PHPExcelHelper();
 
 // 第一组数据
 //--------------------------------------------------------------
