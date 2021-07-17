@@ -1,7 +1,7 @@
 <?php
 namespace whalephp\tool;
-use PHPExcel_IOFactory;
-use PHPExcel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PHPExcelHelper
 {
@@ -15,7 +15,7 @@ class PHPExcelHelper
         if (PHP_SAPI == 'cli')
             die('This example should only be run from a Web Browser');
 
-        $this->objPHPExcel = new \PHPExcel();
+        $this->objPHPExcel = new Spreadsheet();
     }
 
     public function getCharacterByColNum($col_num){
@@ -74,7 +74,7 @@ class PHPExcelHelper
     {
         // Sheet 设置
         if($file_info['sheetIndex']>0){     //创建附加工作表
-            $newWorkSheet = new \PHPExcel_Worksheet($this->objPHPExcel, 'card_message'); 	//创建一个工作表
+            $newWorkSheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($this->objPHPExcel, 'card_message'); 	//创建一个工作表
             $this->objPHPExcel->addSheet($newWorkSheet); 									        //插入工作表
             $this->objPHPExcel->setActiveSheetIndex($file_info['sheetIndex']);
         }
@@ -118,7 +118,7 @@ class PHPExcelHelper
 
             // 设置列宽
             //-----------------------------------------------
-            if($width || $file_info['width']){      // 指定宽度
+            if($width || (isset($file_info['width']) && $file_info['width'])){      // 指定宽度
                 $width = ($width)?$width:$file_info['width'];
                 $this->objPHPExcel->getActiveSheet()->getColumnDimension($toCharacter)->setWidth($width);
             }else{          // 设置自适应
@@ -185,7 +185,7 @@ class PHPExcelHelper
      * @param string $excel_type
      * @throws \PHPExcel_Exception
      */
-    public function exportExcelSimp($file_info,$keyArr,$list,$excel_type='xls'){
+    public function exportExcelSimp($file_info,$keyArr,$list,$excel_type='xlsx'){
 
         $file_info_defaulty = [
             'file_name'     => date('Y-m-d H:i:s'),
@@ -360,7 +360,7 @@ class PHPExcelHelper
 
         //设置背景色
         if( isset($colData['background']) ){
-            $objSheet->getStyle($currentCell)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)
+            $objSheet->getStyle($currentCell)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB( $colData['background'] );
         }
 
@@ -373,8 +373,8 @@ class PHPExcelHelper
         if( isset($colData['center']) && $colData['center'] ){
             $objSheet->getStyle($currentCell)->applyFromArray(array(
                 'alignment' => array(
-                    'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    'vertical'	 => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical'	 => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 )
             ));
         }
@@ -386,7 +386,7 @@ class PHPExcelHelper
      * 执行导出
      * @param unknown $file_name
      */
-    private function doExport($file_name,$excel_type='xls'){
+    private function doExport($file_name,$excel_type='xlsx'){
 
         ob_end_clean();//清除缓冲区,避免乱码
         ob_start();
@@ -407,7 +407,7 @@ class PHPExcelHelper
             header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
             header ('Pragma: public'); // HTTP/1.0
 
-            $objWriter = \PHPExcel_IOFactory::createWriter($this->objPHPExcel, 'Excel2007');
+            $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->objPHPExcel, 'Xlsx');
             $objWriter->save('php://output');
             exit;
         }else{
@@ -415,7 +415,7 @@ class PHPExcelHelper
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$file_name.'.xls"');
             header('Cache-Control: max-age=0');
-            $objWriter = \PHPExcel_IOFactory::createWriter($this->objPHPExcel, 'Excel5');
+            $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->objPHPExcel, 'Xls');
             $objWriter->save('php://output');
             exit;
         }

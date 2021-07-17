@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "phpoffice/phpexcel": "^1.8"
+        "php": "^7.2 || ^8.0",
+        "phpoffice/phpspreadsheet": "^1.18"
     },
     "autoload": {
         "psr-4": {
